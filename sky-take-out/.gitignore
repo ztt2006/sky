@@ -1,6 +1,19 @@
+# 编译产物 target
 **/target/
-.idea
+
+# IDEA 相关
+.idea/
 *.iml
+
+# class字节码文件
 *.class
+
+# 测试相关
 *Test.java
 **/test/
+
+# 额外推荐加上（SpringBoot常用，避免后面踩坑）
+*.log
+*.yml.local
+application-dev.yml
+.DS_Store
