@@ -10,6 +10,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 @Mapper
 public interface DishMapper {
 
@@ -53,4 +55,12 @@ public interface DishMapper {
      * @param dish
      */
     void update(Dish dish);
+
+    /***
+     * 根据分类Id查询菜品列表
+     * @param categoryId
+     * @return
+     */
+    @Select("select * from dish where category_id = #{categoryId}")
+    List<DishVO> listByCategoryId(Long categoryId);
 }
