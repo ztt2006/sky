@@ -71,6 +71,7 @@ public class SetmealServiceImpl implements SetmealService {
      * @param ids
      */
     @Override
+    @Transactional
     public void delete(String ids) {
         if (ids == null || ids.isEmpty()) {
             return;
@@ -88,8 +89,9 @@ public class SetmealServiceImpl implements SetmealService {
         }
 
         for (Long id : idList) {
-            setmealMapper.deleteById(id);
             setmealDishMapper.deleteBySetmealId(id);
+            setmealMapper.deleteById(id);
+
         }
     }
 }
