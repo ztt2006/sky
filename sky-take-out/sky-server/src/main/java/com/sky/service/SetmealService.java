@@ -17,4 +17,10 @@ public interface SetmealService {
      * @return
      */
     PageResult page(SetmealPageQueryDTO setmealPageQueryDTO);
+
+    /***
+     * 批量删除套餐接口
+     * @param ids
+     */
+    void delete(String ids);
 }

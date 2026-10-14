@@ -2,10 +2,13 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.constant.MessageConstant;
+import com.sky.constant.StatusConstant;
 import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
+import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.SetmealDishMapper;
 import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
@@ -17,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -59,5 +64,32 @@ public class SetmealServiceImpl implements SetmealService {
         pageResult.setTotal(page.getTotal());
         pageResult.setRecords(page.getResult());
         return pageResult;
+    }
+
+    /***
+     * 批量删除套餐接口
+     * @param ids
+     */
+    @Override
+    public void delete(String ids) {
+        if (ids == null || ids.isEmpty()) {
+            return;
+        }
+        List<Long> idList = Arrays.stream(ids.split(","))
+                .map(Long::valueOf)
+                .collect(Collectors.toList());
+
+
+        for (Long id : idList) {
+            Setmeal setmeal = setmealMapper.getById(id);
+            if (setmeal.getStatus() == StatusConstant.ENABLE) {
+                throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ON_SALE);
+            }
+        }
+
+        for (Long id : idList) {
+            setmealMapper.deleteById(id);
+            setmealDishMapper.deleteBySetmealId(id);
+        }
     }
 }
