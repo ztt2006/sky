@@ -62,11 +62,30 @@ public class SetmealController {
         return Result.success();
     }
 
+    /***
+     * 根据套餐id查询套餐详情接口
+     * @param id
+     * @return
+     */
     @GetMapping("/{id}")
     @ApiOperation("根据套餐id查询套餐详情接口")
     public Result<SetmealVO> getById(@PathVariable Long id) {
         log.info("根据套餐id查询套餐详情接口，套餐ID：{}", id);
         SetmealVO setmealVO = setmealService.getById(id);
         return Result.success(setmealVO);
+    }
+
+
+    /***
+     * 更新套餐接口
+     * @param setmealDTO
+     * @return
+     */
+    @PutMapping
+    @ApiOperation("更新套餐接口")
+    public Result update(@RequestBody SetmealDTO setmealDTO) {
+        log.info("更新套餐接口，套餐信息：{}", setmealDTO);
+        setmealService.update(setmealDTO);
+        return Result.success();
     }
 }
