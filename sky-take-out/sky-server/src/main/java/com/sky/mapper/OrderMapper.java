@@ -1,5 +1,7 @@
 package com.sky.mapper;
 
+import com.github.pagehelper.Page;
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -36,4 +38,11 @@ public interface OrderMapper {
             "pay_method = #{payMethod}, checkout_time = #{checkoutTime} " +
             "where id = #{id} and user_id = #{userId} and status = 1 and pay_status = 0")
     int markPaid(Orders orders);
+
+    /***
+     * 分页查询订单
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    Page<Orders> pageQuery(OrdersPageQueryDTO ordersPageQueryDTO);
 }
