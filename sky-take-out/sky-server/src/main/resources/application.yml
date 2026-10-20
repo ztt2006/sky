@@ -55,5 +55,6 @@ sky:
   wechat:
     appid: ${sky.wechat.appid}
     secret: ${sky.wechat.secret}
+    # 订单使用模拟支付，无需配置商户号、支付证书和支付回调地址。
 
 

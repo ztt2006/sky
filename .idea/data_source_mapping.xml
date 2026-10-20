@@ -2,7 +2,9 @@
 <project version="4">
   <component name="DataSourcePerFileMappings">
     <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/java/com/sky/mapper/AddressBookMapper.java" value="6e26b0e3-9a62-48fd-9012-1ab7392ab53d" />
+    <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/java/com/sky/mapper/OrderMapper.java" value="6e26b0e3-9a62-48fd-9012-1ab7392ab53d" />
     <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/java/com/sky/mapper/ShoppingCartMapper.java" value="6e26b0e3-9a62-48fd-9012-1ab7392ab53d" />
+    <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/java/com/sky/mapper/UserMapper.java" value="6e26b0e3-9a62-48fd-9012-1ab7392ab53d" />
     <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/resources/mapper/OrderMapper.xml" value="6e26b0e3-9a62-48fd-9012-1ab7392ab53d" />
   </component>
 </project>
