@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -321,5 +322,33 @@ public class OrderServiceImpl implements OrderService {
         } else {
             log.info("取消未付款订单成功，订单号：{}，无需退款", ordersDB.getNumber());
         }
+    }
+
+    /***
+     * 用户再来一单
+     * @param id
+     */
+    @Override
+    public void repetition(Long id) {
+        //     查询当前用户id
+        Long userId = BaseContext.getCurrentId();
+
+        // 根据订单id查询当前订单详情
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
+
+        // 将订单详情对象转换为购物车对象
+        List<ShoppingCart> shoppingCartList = orderDetailList.stream().map(x -> {
+            ShoppingCart shoppingCart = new ShoppingCart();
+            //     将原订单详情里面的菜品信息重新复制到购物车对象中
+            BeanUtils.copyProperties(x, shoppingCart, "id");
+            shoppingCart.setUserId(userId);
+            shoppingCart.setCreateTime(LocalDateTime.now());
+            return shoppingCart;
+        }).collect(Collectors.toList());
+
+        //     插入购物车数据
+        shoppingCartMapper.insertBatch(shoppingCartList);
+        
+
     }
 }
