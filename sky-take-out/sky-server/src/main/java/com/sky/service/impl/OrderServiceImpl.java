@@ -274,4 +274,52 @@ public class OrderServiceImpl implements OrderService {
         orderVO.setOrderDetailList(orderDetailList);
         return orderVO;
     }
+
+    /***
+     * 用户取消订单
+     * @param id
+     */
+    @Override
+    public void userCancelById(Long id) throws Exception {
+        Long userId = BaseContext.getCurrentId();
+        if (userId == null) {
+            throw new OrderBusinessException(MessageConstant.USER_NOT_LOGIN);
+        }
+        //     根据id查询订单
+        Orders ordersDB = orderMapper.getById(id);
+
+        //     校验订单是否存在
+        if (ordersDB == null || !userId.equals(ordersDB.getUserId())) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+
+        // 订单状态 1待付款 2待接单 3已接单 4派送中 5已完成 6已取消
+        if ((!Orders.PENDING_PAYMENT.equals(ordersDB.getStatus())
+                && !Orders.TO_BE_CONFIRMED.equals(ordersDB.getStatus()))
+                || (!Orders.UN_PAID.equals(ordersDB.getPayStatus())
+                && !Orders.PAID.equals(ordersDB.getPayStatus()))) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        Orders orders = new Orders();
+        orders.setId(ordersDB.getId());
+        orders.setUserId(userId);
+
+        // 模拟退款：已付款订单直接标记退款，未付款订单保持未支付，不调用微信。
+        orders.setPayStatus(Orders.PAID.equals(ordersDB.getPayStatus()) ? Orders.REFUND : Orders.UN_PAID);
+
+        //     更新订单状态,取消原因，取消时间
+        orders.setStatus(Orders.CANCELLED);
+        orders.setCancelReason("用户取消订单");
+        orders.setCancelTime(LocalDateTime.now());
+        // 状态和退款标记一起更新，防止覆盖同时发生的接单或支付。
+        if (orderMapper.cancelIfUnchanged(orders, ordersDB.getStatus(), ordersDB.getPayStatus()) != 1) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+        if (Orders.REFUND.equals(orders.getPayStatus())) {
+            log.info("取消订单并模拟退款成功，订单号：{}，退款金额：{}元", ordersDB.getNumber(), ordersDB.getAmount());
+        } else {
+            log.info("取消未付款订单成功，订单号：{}，无需退款", ordersDB.getNumber());
+        }
+    }
 }
