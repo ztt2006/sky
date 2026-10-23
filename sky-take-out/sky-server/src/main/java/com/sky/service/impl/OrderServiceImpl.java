@@ -348,7 +348,23 @@ public class OrderServiceImpl implements OrderService {
 
         //     插入购物车数据
         shoppingCartMapper.insertBatch(shoppingCartList);
-        
+    }
 
+    /***
+     * 订单搜索
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    @Override
+    public PageResult conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
+        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
+
+        Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);
+
+        List<OrderVO> orderVOList = getOrderVOList(page);
+        return new PageResult(page.getTotal(), orderVOList);
+    }
+
+    private List<OrderVO> getOrderVOList(Page<Orders> page) {
     }
 }
